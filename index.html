@@ -5,135 +5,219 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Mexxwell Wunschliste</title>
     <style>
-        :root{--bg:#0f1720;--card:#0b1320;--accent:#22c55e;--muted:#9aa4b2;--glass:rgba(255,255,255,0.03)}
+        :root{--bg:#0a1a0a;--card:#1a2415;--accent:#ff4444;--accent2:#00ff00;--muted:#7a8fa6;--grid:rgba(255,68,68,0.05)}
         *{box-sizing:border-box}
-        body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;background:linear-gradient(180deg,#071022 0%,#071018 60%);color:#e6eef6;padding:24px}
-        header{max-width:1000px;margin:0 auto 18px}
-        h1{margin:0 0 6px;font-size:clamp(20px,3vw,28px);letter-spacing:0.4px}
-        p.lead{margin:0;color:var(--muted);font-size:14px}
-        main{max-width:1000px;margin:18px auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-        .card{background:linear-gradient(180deg,var(--card),#071124);padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);backdrop-filter:blur(4px);box-shadow:0 6px 18px rgba(2,6,23,0.6)}
-        .title{margin:0 0 8px;font-size:16px}
-        .title a{color:#dff5ea;text-decoration:none}
-        .meta{display:flex;align-items:center;justify-content:space-between;gap:8px}
-        .price{background:var(--glass);padding:6px 10px;border-radius:8px;color:var(--accent);font-weight:600}
-        .source{color:var(--muted);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-        .actions{margin-top:10px;display:flex;gap:8px}
-        .btn{flex:1;padding:8px 10px;border-radius:8px;text-align:center;text-decoration:none;color:#071124;background:#dff5ea33;font-weight:600;border:1px solid rgba(255,255,255,0.03)}
-        .btn:hover{opacity:0.95;transform:translateY(-1px)}
-        footer{max-width:1000px;margin:22px auto 0;color:var(--muted);font-size:13px;text-align:center}
-        @media (max-width:420px){body{padding:14px}}
+        body{margin:0;font-family:'Courier New',monospace;background:#0a1a0a;color:#e0e8f0;padding:32px 24px;min-height:100vh;position:relative;overflow-x:hidden}
+        body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background-image:linear-gradient(0deg,transparent 24%,rgba(255,68,68,0.05) 25%,rgba(255,68,68,0.05) 26%,transparent 27%,transparent 74%,rgba(255,68,68,0.05) 75%,rgba(255,68,68,0.05) 76%,transparent 77%,transparent),linear-gradient(90deg,transparent 24%,rgba(255,68,68,0.05) 25%,rgba(255,68,68,0.05) 26%,transparent 27%,transparent 74%,rgba(255,68,68,0.05) 75%,rgba(255,68,68,0.05) 76%,transparent 77%,transparent);background-size:50px 50px;pointer-events:none;z-index:1}
+        header{max-width:1200px;margin:0 auto 48px;text-align:center;position:relative;z-index:2}
+        h1{margin:0;font-size:clamp(28px,5vw,42px);letter-spacing:3px;color:var(--accent);text-shadow:0 0 20px var(--accent),0 0 40px rgba(255,68,68,0.3);font-weight:900;text-transform:uppercase}
+        p.lead{margin:12px 0 0;color:var(--accent2);font-size:14px;letter-spacing:1px;text-transform:uppercase;text-shadow:0 0 10px rgba(0,255,0,0.3)}
+        main{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;position:relative;z-index:2}
+        .card{background:linear-gradient(135deg,#1a2415 0%,#0f1a0a 100%);padding:20px;border:2px solid rgba(255,68,68,0.3);position:relative;overflow:hidden;transition:all 0.3s ease}
+        .card::before{content:'';position:absolute;top:-1px;left:-1px;right:-1px;bottom:-1px;background:linear-gradient(135deg,var(--accent),transparent);opacity:0;transition:opacity 0.3s;z-index:-1;pointer-events:none}
+        .card::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(255,68,68,0.1),transparent);pointer-events:none}
+        .card:hover{border-color:var(--accent);box-shadow:0 0 20px rgba(255,68,68,0.5),inset 0 0 20px rgba(255,68,68,0.1);transform:translateY(-4px)}
+        .title{margin:0 0 16px;font-size:15px;position:relative;z-index:1;letter-spacing:0.5px}
+        .title a{color:var(--accent2);text-decoration:none;transition:all 0.3s;text-transform:uppercase}
+        .title a:hover{text-shadow:0 0 10px var(--accent2)}
+        .meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;position:relative;z-index:1;font-size:12px;letter-spacing:0.5px}
+        .source{color:var(--muted);text-transform:uppercase}
+        .price{color:var(--accent);font-weight:900;font-size:14px;letter-spacing:1px;text-transform:uppercase}
+        .actions{margin-top:16px;display:flex;gap:10px;position:relative;z-index:1}
+        .btn{flex:1;padding:12px 14px;border:2px solid var(--accent);background:transparent;color:var(--accent);text-align:center;text-decoration:none;font-family:'Courier New',monospace;font-weight:900;cursor:pointer;transition:all 0.3s;text-transform:uppercase;font-size:12px;letter-spacing:1px;position:relative;overflow:hidden}
+        .btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:var(--accent);z-index:-1;transition:left 0.3s}
+        .btn:hover{color:#0a1a0a;left:0}
+        .btn:hover::before{left:0}
+        .purchase-list{max-width:1200px;margin:48px auto;position:relative;z-index:2}
+        .purchase-list h2{color:var(--accent);font-size:24px;margin-bottom:20px;letter-spacing:2px;text-transform:uppercase}
+        .purchase-table{width:100%;border-collapse:collapse;border:2px solid rgba(255,68,68,0.3)}
+        .purchase-table th{background:rgba(255,68,68,0.2);color:var(--accent2);padding:12px;text-align:left;text-transform:uppercase;font-size:12px;letter-spacing:1px;border-bottom:2px solid rgba(255,68,68,0.3)}
+        .purchase-table td{padding:12px;border-bottom:1px solid rgba(255,68,68,0.2);color:#e0e8f0}
+        .purchase-table tr:hover{background:rgba(255,68,68,0.05)}
+        .purchase-table .bought{color:var(--accent2);font-weight:900}
+        footer{max-width:1200px;margin:48px auto 0;color:var(--muted);font-size:12px;text-align:center;padding-top:24px;border-top:1px solid rgba(255,68,68,0.2);position:relative;z-index:2;letter-spacing:0.5px;text-transform:uppercase}
+        @media (max-width:420px){body{padding:16px 12px} header{margin-bottom:32px} main{gap:14px} .card{padding:16px} h1{font-size:24px} .purchase-table{font-size:11px} .purchase-table th,.purchase-table td{padding:8px}}
     </style>
 </head>
 <body>
     <header>
-        <h1>Mexxwell Wunschliste</h1>
-        <p class="lead">Alle Links aus dem Dokument, übersichtlich dargestellt. Öffnen in neuem Tab.</p>
+        <h1>🎄 MEXXWELL WUNSCHLISTE 🎄</h1>
+        <p class="lead">🎅 FROHE WEIHNACHTEN - NEU TAB 🎅</p>
     </header>
 
     <main>
         <article class="card">
-            <h2 class="title"><a href="https://benx.shop/products/jubilaum-3000-folge-hoodie" target="_blank" rel="noopener">Jubiläum 3000. Folge - Hoodie</a></h2>
+            <h2 class="title"><a href="https://benx.shop/products/jubilaum-3000-folge-hoodie" target="_blank" rel="noopener">Jubiläum 3000. Hoodie</a></h2>
             <div class="meta">
                 <div class="source">benx.shop</div>
                 <div class="price">€44,99</div>
             </div>
             <div class="actions">
-                <a class="btn" href="https://benx.shop/products/jubilaum-3000-folge-hoodie" target="_blank" rel="noopener">Zum Produkt</a>
+                <a class="btn" href="https://benx.shop/products/jubilaum-3000-folge-hoodie" target="_blank" rel="noopener">🎁 KAUFEN</a>
             </div>
         </article>
 
         <article class="card">
-            <h2 class="title"><a href="https://benx.shop/products/enderdrache-hoodie" target="_blank" rel="noopener">Enderdrache - Hoodie</a></h2>
+            <h2 class="title"><a href="https://benx.shop/products/enderdrache-hoodie" target="_blank" rel="noopener">Enderdrache Hoodie</a></h2>
             <div class="meta">
                 <div class="source">benx.shop</div>
                 <div class="price">€44,99</div>
             </div>
             <div class="actions">
-                <a class="btn" href="https://benx.shop/products/enderdrache-hoodie" target="_blank" rel="noopener">Zum Produkt</a>
+                <a class="btn" href="https://benx.shop/products/enderdrache-hoodie" target="_blank" rel="noopener">🎁 KAUFEN</a>
             </div>
         </article>
 
         <article class="card">
-            <h2 class="title"><a href="https://chaosflo44.profi-druck.com/team-melone-test-all-over-print-t-shirt-unisex.html" target="_blank" rel="noopener">Team Melone Test — All-Over-Print T‑Shirt (unisex)</a></h2>
+            <h2 class="title"><a href="https://chaosflo44.profi-druck.com/team-melone-test-all-over-print-t-shirt-unisex.html" target="_blank" rel="noopener">Team Melone T-Shirt</a></h2>
             <div class="meta">
-                <div class="source">chaosflo44.profi-druck.com</div>
+                <div class="source">profi-druck.com</div>
                 <div class="price">€29,95</div>
             </div>
             <div class="actions">
-                <a class="btn" href="https://chaosflo44.profi-druck.com/team-melone-test-all-over-print-t-shirt-unisex.html" target="_blank" rel="noopener">Zum Produkt</a>
+                <a class="btn" href="https://chaosflo44.profi-druck.com/team-melone-test-all-over-print-t-shirt-unisex.html" target="_blank" rel="noopener">🎁 KAUFEN</a>
             </div>
         </article>
 
         <article class="card">
-            <h2 class="title"><a href="https://chaosflo44.profi-druck.com/chaosflo44-billy-kuscheltier.html" target="_blank" rel="noopener">Chaosflo44 BILLY Kuscheltier</a></h2>
+            <h2 class="title"><a href="https://chaosflo44.profi-druck.com/chaosflo44-billy-kuscheltier.html" target="_blank" rel="noopener">BILLY Kuscheltier</a></h2>
             <div class="meta">
-                <div class="source">chaosflo44.profi-druck.com</div>
+                <div class="source">profi-druck.com</div>
                 <div class="price">€32,95</div>
             </div>
             <div class="actions">
-                <a class="btn" href="https://chaosflo44.profi-druck.com/chaosflo44-billy-kuscheltier.html" target="_blank" rel="noopener">Zum Produkt</a>
+                <a class="btn" href="https://chaosflo44.profi-druck.com/chaosflo44-billy-kuscheltier.html" target="_blank" rel="noopener">🎁 KAUFEN</a>
             </div>
         </article>
 
         <article class="card">
-            <h2 class="title"><a href="https://chaosflo44.profi-druck.com/team-melone-eis-void-all-over-print-t-shirt-unisex.html" target="_blank" rel="noopener">Team Melone Eis Void — All-Over-Print T‑Shirt (unisex)</a></h2>
+            <h2 class="title"><a href="https://chaosflo44.profi-druck.com/team-melone-eis-void-all-over-print-t-shirt-unisex.html" target="_blank" rel="noopener">Team Melone Void</a></h2>
             <div class="meta">
-                <div class="source">chaosflo44.profi-druck.com</div>
+                <div class="source">profi-druck.com</div>
                 <div class="price">€29,95</div>
             </div>
             <div class="actions">
-                <a class="btn" href="https://chaosflo44.profi-druck.com/team-melone-eis-void-all-over-print-t-shirt-unisex.html" target="_blank" rel="noopener">Zum Produkt</a>
+                <a class="btn" href="https://chaosflo44.profi-druck.com/team-melone-eis-void-all-over-print-t-shirt-unisex.html" target="_blank" rel="noopener">🎁 KAUFEN</a>
             </div>
         </article>
 
         <article class="card">
-            <h2 class="title"><a href="https://chaosflo44.profi-druck.com/chaosflo44-mini-ender-axel-kuscheltier.html" target="_blank" rel="noopener">Chaosflo44 MINI‑ENDER‑AXEL Kuscheltier</a></h2>
+            <h2 class="title"><a href="https://chaosflo44.profi-druck.com/chaosflo44-mini-ender-axel-kuscheltier.html" target="_blank" rel="noopener">MINI-ENDER-AXEL</a></h2>
             <div class="meta">
-                <div class="source">chaosflo44.profi-druck.com</div>
+                <div class="source">profi-druck.com</div>
                 <div class="price">€22,95</div>
             </div>
             <div class="actions">
-                <a class="btn" href="https://chaosflo44.profi-druck.com/chaosflo44-mini-ender-axel-kuscheltier.html" target="_blank" rel="noopener">Zum Produkt</a>
+                <a class="btn" href="https://chaosflo44.profi-druck.com/chaosflo44-mini-ender-axel-kuscheltier.html" target="_blank" rel="noopener">🎁 KAUFEN</a>
             </div>
         </article>
 
         <article class="card">
-            <h2 class="title"><a href="https://www.saturn.de/de/product/_msi-mag-infinite-s3-14nvl5-2814de-gaming-pc-mit-intelr-coretm-i5-i5-14400f-prozessor-16-gb-ram-1-tb-ssd-geforce-rtxtm-5060-windows-11-home-2993396.html" target="_blank" rel="noopener">MSI MAG INFINITE S3 — Gaming‑PC (i5‑14400F, RTX 5060)</a></h2>
+            <h2 class="title"><a href="https://www.saturn.de/de/product/_msi-mag-infinite-s3-14nvl5-2814de-gaming-pc-mit-intelr-coretm-i5-i5-14400f-prozessor-16-gb-ram-1-tb-ssd-geforce-rtxtm-5060-windows-11-home-2993396.html" target="_blank" rel="noopener">MSI MAG INFINITE S3</a></h2>
             <div class="meta">
                 <div class="source">saturn.de</div>
                 <div class="price">€999,00</div>
             </div>
             <div class="actions">
-                <a class="btn" href="https://www.saturn.de/de/product/_msi-mag-infinite-s3-14nvl5-2814de-gaming-pc-mit-intelr-coretm-i5-i5-14400f-prozessor-16-gb-ram-1-tb-ssd-geforce-rtxtm-5060-windows-11-home-2993396.html" target="_blank" rel="noopener">Zum Produkt</a>
+                <a class="btn" href="https://www.saturn.de/de/product/_msi-mag-infinite-s3-14nvl5-2814de-gaming-pc-mit-intelr-coretm-i5-i5-14400f-prozessor-16-gb-ram-1-tb-ssd-geforce-rtxtm-5060-windows-11-home-2993396.html" target="_blank" rel="noopener">🎁 KAUFEN</a>
             </div>
         </article>
 
         <article class="card">
-            <h2 class="title"><a href="https://www.saturn.de/de/product/_logitech-g915-x-lightspeed-double-shot-pbt-tastenkappen-fur-pcmac-gaming-tastatur-kabellos-schwarz-2951464.html" target="_blank" rel="noopener">LOGITECH G915 X LIGHTSPEED — Gaming‑Tastatur</a></h2>
+            <h2 class="title"><a href="https://www.saturn.de/de/product/_logitech-g915-x-lightspeed-double-shot-pbt-tastenkappen-fur-pcmac-gaming-tastatur-kabellos-schwarz-2951464.html" target="_blank" rel="noopener">LOGITECH G915 X</a></h2>
             <div class="meta">
                 <div class="source">saturn.de</div>
                 <div class="price">€192,99</div>
             </div>
             <div class="actions">
-                <a class="btn" href="https://www.saturn.de/de/product/_logitech-g915-x-lightspeed-double-shot-pbt-tastenkappen-fur-pcmac-gaming-tastatur-kabellos-schwarz-2951464.html" target="_blank" rel="noopener">Zum Produkt</a>
+                <a class="btn" href="https://www.saturn.de/de/product/_logitech-g915-x-lightspeed-double-shot-pbt-tastenkappen-fur-pcmac-gaming-tastatur-kabellos-schwarz-2951464.html" target="_blank" rel="noopener">🎁 KAUFEN</a>
             </div>
         </article>
 
         <article class="card">
-            <h2 class="title"><a href="https://www.saturn.de/de/product/_acer-nitro-qg241y-x1-270-zoll-full-hd-gaming-monitor-1-ms-reaktionszeit-200-hz-2974723.html" target="_blank" rel="noopener">ACER Nitro QG271X1 — 27" Full‑HD Gaming Monitor</a></h2>
+            <h2 class="title"><a href="https://www.saturn.de/de/product/_acer-nitro-qg241y-x1-270-zoll-full-hd-gaming-monitor-1-ms-reaktionszeit-200-hz-2974723.html" target="_blank" rel="noopener">ACER NITRO QG271X1</a></h2>
             <div class="meta">
                 <div class="source">saturn.de</div>
                 <div class="price">€139,00</div>
             </div>
             <div class="actions">
-                <a class="btn" href="https://www.saturn.de/de/product/_acer-nitro-qg241y-x1-270-zoll-full-hd-gaming-monitor-1-ms-reaktionszeit-200-hz-2974723.html" target="_blank" rel="noopener">Zum Produkt</a>
+                <a class="btn" href="https://www.saturn.de/de/product/_acer-nitro-qg241y-x1-270-zoll-full-hd-gaming-monitor-1-ms-reaktionszeit-200-hz-2974723.html" target="_blank" rel="noopener">🎁 KAUFEN</a>
             </div>
         </article>
     </main>
 
+    <section class="purchase-list">
+        <h2>📋 WER HAT WAS GEKAUFT</h2>
+        <table class="purchase-table">
+            <thead>
+                <tr>
+                    <th>Artikel</th>
+                    <th>Preis</th>
+                    <th>Gekauft von</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Jubiläum 3000. Hoodie</td>
+                    <td>€44,99</td>
+                    <td>-</td>
+                    <td class="bought">VERFÜGBAR</td>
+                </tr>
+                <tr>
+                    <td>Enderdrache Hoodie</td>
+                    <td>€44,99</td>
+                    <td>-</td>
+                    <td class="bought">VERFÜGBAR</td>
+                </tr>
+                <tr>
+                    <td>Team Melone T-Shirt</td>
+                    <td>€29,95</td>
+                    <td>-</td>
+                    <td class="bought">VERFÜGBAR</td>
+                </tr>
+                <tr>
+                    <td>BILLY Kuscheltier</td>
+                    <td>€32,95</td>
+                    <td>-</td>
+                    <td class="bought">VERFÜGBAR</td>
+                </tr>
+                <tr>
+                    <td>Team Melone Void</td>
+                    <td>€29,95</td>
+                    <td>-</td>
+                    <td class="bought">VERFÜGBAR</td>
+                </tr>
+                <tr>
+                    <td>MINI-ENDER-AXEL</td>
+                    <td>€22,95</td>
+                    <td>-</td>
+                    <td class="bought">VERFÜGBAR</td>
+                </tr>
+                <tr>
+                    <td>MSI MAG INFINITE S3</td>
+                    <td>€999,00</td>
+                    <td>-</td>
+                    <td class="bought">VERFÜGBAR</td>
+                </tr>
+                <tr>
+                    <td>LOGITECH G915 X</td>
+                    <td>€192,99</td>
+                    <td>-</td>
+                    <td class="bought">VERFÜGBAR</td>
+                </tr>
+                <tr>
+                    <td>ACER NITRO QG271X1</td>
+                    <td>€139,00</td>
+                    <td>-</td>
+                    <td class="bought">VERFÜGBAR</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
     <footer>
-        Tipp: Öffne die Produkte in neuen Tabs. Anpassungen am Layout auf Anfrage.
+        🎄 ÖFFNE IN NEUEM TAB | FROHE WEIHNACHTEN 🎄
     </footer>
 </body>
-</html></div></article></div></article></div></article></div></article>
+</html>
